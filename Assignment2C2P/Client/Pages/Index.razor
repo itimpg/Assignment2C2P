@@ -1,32 +1,61 @@
 ﻿@page "/"
 @using Assignment2C2P.Shared
+@using BlazorDateRangePicker;
 @inject HttpClient Http
 
 <h1>Transactions</h1>
 
-@if (forecasts == null)
+@if (transactions == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+<div>
+    <h3>Criteria</h3>
+    <div class="form-group">
+        <label>Currency</label>
+        <select class="form-control" @bind="currency">
+            <option>no select</option>
+            <option value="USD">USD</option>
+            <option value="THB">THB</option>
+            <option value="CAD">CAD</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Date Range</label>
+        <DateRangePicker class="form-control"
+                         OnRangeSelect="OnRangeSelect"
+                         placeholder="Select dates..." />
+    </div>
+    <div class="form-group">
+        <label>Status</label>
+        <select class="form-control" @bind="status">
+            <option>no select</option>
+            <option value="A">A</option>
+            <option value="R">R</option>
+            <option value="D">D</option>
+        </select>
+    </div>
+    <button class="btn btn-block btn-success" @onclick="async()=> await SearchDataAsync()">Search</button>
+
+</div>
+
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Id</th>
+                <th>Amount</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var transaction in transactions)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@transaction.Id</td>
+                    <td>@transaction.Payment</td>
+                    <td>@transaction.Status</td>
                 </tr>
             }
         </tbody>
@@ -34,11 +63,43 @@ else
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+    private TransactionViewModel[] transactions;
+    private string currency;
+    private string status;
+    private DateTime? dateFrom;
+    private DateTime? dateTo;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        await SearchDataAsync();
     }
 
+    void OnRangeSelect(DateRange range)
+    {
+        dateFrom = range.Start.Date;
+        dateTo = range.End.Date;
+    }
+
+    private async Task SearchDataAsync()
+    {
+        string url = "api/transactions";
+
+        if (!string.IsNullOrEmpty(status))
+        {
+            url = QueryHelpers.AddQueryString(url, "statusCode", status);
+        }
+
+        if (!string.IsNullOrEmpty(currency))
+        {
+            url = QueryHelpers.AddQueryString(url, "currencyCode", currency);
+        }
+
+        if (dateFrom.HasValue && dateTo.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "dateFrom", DateHelper.ToString(dateFrom.Value));
+            url = QueryHelpers.AddQueryString(url, "dateTo", DateHelper.ToString(dateTo.Value));
+        }
+
+        transactions = await Http.GetFromJsonAsync<TransactionViewModel[]>(url);
+    }
 }
