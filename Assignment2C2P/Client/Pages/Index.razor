@@ -11,35 +11,36 @@
 }
 else
 {
-<div>
-    <h3>Criteria</h3>
-    <div class="form-group">
-        <label>Currency</label>
-        <select class="form-control" @bind="currency">
-            <option>no select</option>
-            <option value="USD">USD</option>
-            <option value="THB">THB</option>
-            <option value="CAD">CAD</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Date Range</label>
-        <DateRangePicker class="form-control"
-                         OnRangeSelect="OnRangeSelect"
-                         placeholder="Select dates..." />
-    </div>
-    <div class="form-group">
-        <label>Status</label>
-        <select class="form-control" @bind="status">
-            <option>no select</option>
-            <option value="A">A</option>
-            <option value="R">R</option>
-            <option value="D">D</option>
-        </select>
-    </div>
-    <button class="btn btn-block btn-success" @onclick="async()=> await SearchDataAsync()">Search</button>
+    <div>
+        <h3>Criteria</h3>
+        <div class="form-group">
+            <label>Currency</label>
+            <select class="form-control" @bind="currency">
+                <option>no select</option>
+                @foreach (var c in currencies)
+                {
+                    <option value="@c">@c</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Date Range</label>
+            <DateRangePicker class="form-control"
+                             OnRangeSelect="OnRangeSelect"
+                             placeholder="Select dates..." />
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" @bind="status">
+                <option>no select</option>
+                <option value="A">A</option>
+                <option value="R">R</option>
+                <option value="D">D</option>
+            </select>
+        </div>
+        <button class="btn btn-block btn-success" @onclick="async()=> await SearchDataAsync()">Search</button>
 
-</div>
+    </div>
 
     <table class="table">
         <thead>
@@ -64,6 +65,7 @@ else
 
 @code {
     private TransactionViewModel[] transactions;
+    private string[] currencies;
     private string currency;
     private string status;
     private DateTime? dateFrom;
@@ -71,6 +73,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await GetCurrenciesAsync();
         await SearchDataAsync();
     }
 
@@ -78,6 +81,12 @@ else
     {
         dateFrom = range.Start.Date;
         dateTo = range.End.Date;
+    }
+
+    private async Task GetCurrenciesAsync()
+    {
+        string url = "api/currencies";
+        currencies = await Http.GetFromJsonAsync<string[]>(url);
     }
 
     private async Task SearchDataAsync()
