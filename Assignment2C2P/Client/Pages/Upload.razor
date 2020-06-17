@@ -1,46 +1,73 @@
 @page "/upload"
-@using Assignment2C2P.Shared
-@inject HttpClient Http
 
-<h1>Weather forecast</h1>
+@using System.IO;
+@using Blazor.FileReader;
 
-<p>This component demonstrates fetching data from the server.</p>
+@inject IFileReaderService fileReader;
+@inject HttpClient client
 
-@if (forecasts == null)
+<h1>Upload File</h1>
+
+<div class="row">
+    <div class="col-4">
+        <div class="form-group">
+            <input type="file" @ref="inputReference" />
+        </div>
+        <button @onclick="async () => await UploadFileAsync()"
+                class="btn btn-block btn-success">
+            Upload File
+        </button>
+    </div>
+</div>
+@if (!string.IsNullOrEmpty(message))
 {
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row mt-2">
+        <div class="col-4">
+            <div class="alert @(hasError?"alert-danger":"alert-success")" role="alert">
+                @message
+            </div>
+        </div>
+    </div>
 }
 
-@code {
-    private WeatherForecast[] forecasts;
+@code{
+    ElementReference inputReference;
+    string message = string.Empty;
+    bool hasError = false;
 
-    protected override async Task OnInitializedAsync()
+    async Task UploadFileAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-    }
+        message = string.Empty;
+        hasError = false;
 
+        var file = (await fileReader.CreateReference(inputReference).EnumerateFilesAsync()).FirstOrDefault();
+        if (file == null)
+        {
+            message = "Please select a transaction file";
+            hasError = true;
+            return;
+        }
+
+        var fileInfo = await file.ReadFileInfoAsync();
+        Stream fileStream;
+        using (var ms = await file.CreateMemoryStreamAsync((int)fileInfo.Size))
+        {
+            fileStream = new MemoryStream(ms.ToArray());
+        }
+
+        var content = new MultipartFormDataContent();
+        content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
+        content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileInfo.Name);
+
+        var response = await client.PostAsync("api/transactions", content);
+        if (response.IsSuccessStatusCode)
+        {
+            message = "upload success!";
+        }
+        else
+        {
+            message = "upload error : " + await response.Content.ReadAsStringAsync();
+            hasError = true;
+        }
+    }
 }
