@@ -1,8 +1,8 @@
-﻿using Assignment2C2P.Shared;
+﻿using Assignment2C2P.Business.Manager.Interface;
+using Assignment2C2P.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -12,6 +12,13 @@ namespace Assignment2C2P.Server.Controllers
     [ApiController]
     public class TransactionsController : ControllerBase
     {
+        private ITransactionManager _manager;
+
+        public TransactionsController(ITransactionManager manager)
+        {
+            _manager = manager;
+        }
+
         [HttpGet]
         public IActionResult Get(
             string currencyCode,
@@ -22,12 +29,7 @@ namespace Assignment2C2P.Server.Controllers
             var from = DateHelper.ToDate(dateFrom);
             var to = DateHelper.ToDate(dateTo);
 
-            // TODO: search data here
-
-            var result = new List<TransactionViewModel>
-            {
-                new TransactionViewModel { Id = "Tran001", Payment = 25000, Status = "A" }
-            };
+            var result = _manager.SearchTransactions(currencyCode, statusCode, from, to);
 
             return Ok(result);
         }

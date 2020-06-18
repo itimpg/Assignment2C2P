@@ -6,9 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Assignment2C2P.Business\Assignment2C2P.Business.csproj" />
+    <ProjectReference Include="..\..\Assignment2C2P.IoC\Assignment2C2P.IoC.csproj" />
     <ProjectReference Include="..\Client\Assignment2C2P.Client.csproj" />
     <ProjectReference Include="..\Shared\Assignment2C2P.Shared.csproj" />
   </ItemGroup>

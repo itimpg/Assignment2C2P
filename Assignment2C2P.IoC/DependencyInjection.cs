@@ -1,5 +1,5 @@
-﻿using Assignment2C2P.Business;
-using Assignment2C2P.Business.Interface;
+﻿using Assignment2C2P.Business.Manager;
+using Assignment2C2P.Business.Manager.Interface;
 using Assignment2C2P.DataAccess.Repository;
 using Assignment2C2P.DataAccess.Repository.Interface;
 using Microsoft.Extensions.DependencyInjection;

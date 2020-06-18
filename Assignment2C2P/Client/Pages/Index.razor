@@ -33,9 +33,9 @@ else
             <label>Status</label>
             <select class="form-control" @bind="status">
                 <option>no select</option>
-                <option value="A">A</option>
-                <option value="R">R</option>
-                <option value="D">D</option>
+                <option value="A">Approved (A)</option>
+                <option value="R">Rejected (R)</option>
+                <option value="D">Done (D)</option>
             </select>
         </div>
         <button class="btn btn-block btn-success" @onclick="async()=> await SearchDataAsync()">Search</button>
