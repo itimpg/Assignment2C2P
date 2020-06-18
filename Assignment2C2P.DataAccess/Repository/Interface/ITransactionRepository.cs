@@ -1,4 +1,5 @@
 ﻿using Assignment2C2P.Domain;
+using System;
 using System.Collections.Generic;
 
 namespace Assignment2C2P.DataAccess.Repository.Interface
@@ -6,6 +7,7 @@ namespace Assignment2C2P.DataAccess.Repository.Interface
     public interface ITransactionRepository
     {
         void BulkInsert(IEnumerable<TransactionItem> items);
-        IList<TransactionItem> GetTransactions();
+        IEnumerable<TransactionItem> SearchTransactions(
+            string currencyCode, string statusCode, DateTime? dateFrom, DateTime? dateTo);
     }
 }
