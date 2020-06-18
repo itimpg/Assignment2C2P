@@ -15,9 +15,7 @@ namespace Assignment2C2P.Shared
 
         public static DateTime? ToDate(string dateTimeString)
         {
-            DateTime result;
-            CultureInfo enUS = new CultureInfo("en-US");
-            if (DateTime.TryParseExact(dateTimeString, DateFormat, enUS, DateTimeStyles.None, out result))
+            if (DateTime.TryParseExact(dateTimeString, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
             {
                 return result;
             }
