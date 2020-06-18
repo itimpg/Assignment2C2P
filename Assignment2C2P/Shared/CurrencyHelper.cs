@@ -7,9 +7,10 @@ namespace Assignment2C2P.Shared
     {
         public static string[] GetCurrencyCodes()
         {
-            return CultureInfo.GetCultures(CultureTypes.AllCultures)
-                .Select(culture => culture.NumberFormat.CurrencySymbol)
+            return CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+                .Select(x => (new RegionInfo(x.LCID)).ISOCurrencySymbol)
                 .Distinct()
+                .OrderBy(x => x)
                 .ToArray();
         }
     }

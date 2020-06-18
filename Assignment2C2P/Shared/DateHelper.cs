@@ -9,8 +9,7 @@ namespace Assignment2C2P.Shared
 
         public static string ToString(DateTime dateTime)
         {
-            CultureInfo enUS = new CultureInfo("en-US");
-            return dateTime.ToString(DateFormat, enUS);
+            return dateTime.ToString(DateFormat, CultureInfo.InvariantCulture);
         }
 
         public static DateTime? ToDate(string dateTimeString)
