@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Assignment2C2P.Business.Tests.Manager
 {
@@ -50,6 +51,26 @@ namespace Assignment2C2P.Business.Tests.Manager
             Assert.AreEqual("TRAN001", resultItem.Id);
             Assert.AreEqual("200.00 USD", resultItem.Payment);
             Assert.AreEqual("A", resultItem.Status);
+        }
+
+        [TestMethod]
+        public void ImportTransactions_Should_ReadDataAndInsertTransactions()
+        {
+            _readerFactory
+                .Setup(x => x.GetTransactionReader(It.IsAny<string>()))
+                .Returns(() =>
+                {
+                    var reader = new Mock<ITransactionReader>();
+                    reader.Setup(x => x.Read(It.IsAny<Stream>())).Returns(new List<TransactionItem>());
+                    return reader.Object;
+                });
+
+            Stream stream = null;
+            string extension = string.Empty;
+
+            _manager.ImportTransactions(stream, extension);
+
+            _repository.Verify(x => x.BulkInsert(It.IsAny<IEnumerable<TransactionItem>>()), Times.Once);
         }
     }
 }
