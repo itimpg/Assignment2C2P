@@ -4,6 +4,6 @@ namespace Assignment2C2P.Business.Validator.Interface
 {
     public interface IXmlTransactionValidator
     {
-        void Validate(TransactionsTransaction[] transactions);
+        void Validate(TransactionsTransaction trans);
     }
 }

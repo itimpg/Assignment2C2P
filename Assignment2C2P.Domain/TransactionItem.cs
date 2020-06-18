@@ -6,7 +6,7 @@ namespace Assignment2C2P.Domain
     public class TransactionItem
     {
         [Key]
-        [MaxLength(50)]
+        public int Id { get; set; }
         public string TransactionId { get; set; }
         public decimal Amount { get; set; }
         public string CurrencyCode { get; set; }

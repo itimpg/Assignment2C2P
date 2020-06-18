@@ -4,6 +4,7 @@ using Assignment2C2P.Business.Validator.Interface;
 using Assignment2C2P.Shared;
 using Assignment2C2P.Shared.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -11,48 +12,40 @@ namespace Assignment2C2P.Business.Validator
 {
     public class XmlTransactionValidator : IXmlTransactionValidator
     {
-        public void Validate(TransactionsTransaction[] transactions)
+        public void Validate(TransactionsTransaction trans)
         {
-            string errorResult = string.Empty;
-            foreach (var trans in transactions)
+            var errorList = new List<string>();
+
+            if (trans.id.Length > 50)
             {
-                string errorMessage = string.Empty;
-
-                if (trans.id.Length > 50)
-                {
-                    errorMessage += $"> Transaction Id's length should be less than 50 but was {trans.id.Length}" + Environment.NewLine;
-                }
-
-                if (!decimal.TryParse(trans.PaymentDetails.Amount, out decimal amount))
-                {
-                    errorMessage += $"> Amount should be decimal number but was {trans.PaymentDetails.Amount}" + Environment.NewLine;
-                }
-
-                if (!CurrencyHelper.GetCurrencyCodes().Contains(trans.PaymentDetails.CurrencyCode))
-                {
-                    errorMessage += $"> CurrencyCode should be in ISO4217 format but was {trans.PaymentDetails.CurrencyCode}" + Environment.NewLine;
-                }
-
-                if (!DateTime.TryParseExact(trans.TransactionDate, "yyyy-MM-ddTHH:mm:ss", null, DateTimeStyles.None, out DateTime transactionDate))
-                {
-                    errorMessage += $"> Transaction Date should be in format (yyyy-MM-ddTHH:mm:ss) but was {trans.TransactionDate}" + Environment.NewLine;
-                }
-
-                if (!StaticValue.XmlStatusList.ContainsKey(trans.Status))
-                {
-                    errorMessage += $"> Status should be (Approved/Rejected/Done) but was {trans.Status}" + Environment.NewLine;
-                }
-
-                if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    errorResult += $"Cannot import {trans.id}" + Environment.NewLine;
-                    errorResult += errorMessage;
-                }
+                errorList.Add($"> Transaction Id's length should be less than 50 but was {trans.id.Length}");
             }
 
-            if (!string.IsNullOrEmpty(errorResult))
+            if (!decimal.TryParse(trans.PaymentDetails.Amount, out _))
             {
-                throw new TransactionValidateErrorException(errorResult);
+                errorList.Add($"> Amount should be decimal number but was {trans.PaymentDetails.Amount}");
+            }
+
+            if (!CurrencyHelper.GetCurrencyCodes().Contains(trans.PaymentDetails.CurrencyCode))
+            {
+                errorList.Add($"> CurrencyCode should be in ISO4217 format but was {trans.PaymentDetails.CurrencyCode}");
+            }
+
+            if (!DateTime.TryParseExact(trans.TransactionDate, "yyyy-MM-ddTHH:mm:ss", null, DateTimeStyles.None, out _))
+            {
+                errorList.Add($"> Transaction Date should be in format (yyyy-MM-ddTHH:mm:ss) but was {trans.TransactionDate}");
+            }
+
+            if (!StaticValue.XmlStatusList.ContainsKey(trans.Status))
+            {
+                errorList.Add($"> Status should be (Approved/Rejected/Done) but was {trans.Status}");
+            }
+
+            if (errorList.Any())
+            {
+                errorList.Insert(0, $"Cannot import transaction {trans.id}");
+                var errorMessage = string.Join(Environment.NewLine, errorList);
+                throw new RecordInvalidException(errorMessage);
             }
         }
     }

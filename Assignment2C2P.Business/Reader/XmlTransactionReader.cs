@@ -25,31 +25,52 @@ namespace Assignment2C2P.Business.Reader
 
         public IList<TransactionItem> Read(Stream stream)
         {
+            var result = new List<TransactionItem>();
+            var errorList = new List<string>();
+            Transactions transaction;
             try
             {
                 var serializer = new XmlSerializer(typeof(Transactions));
-                var transaction = (Transactions)serializer.Deserialize(XmlReader.Create(stream));
-                if(transaction.Transaction == null)
-                {
-                    throw new TransactionValidateErrorException("Transaction is empty");
-                }
-                _validator.Validate(transaction.Transaction);
+                transaction = (Transactions)serializer.Deserialize(XmlReader.Create(stream));
+            }
+            catch (InvalidOperationException)
+            {
+                throw new UnKnowFormatException();
+            }
 
-                return transaction.Transaction
-                    .Select(t => new TransactionItem
+            if (transaction.Transaction == null)
+            {
+                throw new TransactionValidateErrorException("Transaction is empty");
+            }
+
+            foreach (var t in transaction.Transaction)
+            {
+                try
+                {
+                    _validator.Validate(t);
+
+                    result.Add(new TransactionItem
                     {
                         TransactionId = t.id,
                         CurrencyCode = t.PaymentDetails.CurrencyCode,
                         Amount = decimal.Parse(t.PaymentDetails.Amount),
                         TransactionDate = DateTime.ParseExact(t.TransactionDate, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture),
                         Status = StaticValue.XmlStatusList[t.Status]
-                    })
-                    .ToList();
+                    });
+                }
+                catch (RecordInvalidException ex)
+                {
+                    errorList.Add(ex.Message);
+                }
             }
-            catch (InvalidOperationException)
+
+            if (errorList.Any())
             {
-                throw new UnKnowFormatException();
+                var errorMessage = string.Join(Environment.NewLine, errorList);
+                throw new TransactionValidateErrorException(errorMessage);
             }
+
+            return result;
         }
     }
 }
