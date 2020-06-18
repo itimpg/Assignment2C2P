@@ -1,5 +1,6 @@
 ﻿using Assignment2C2P.Business.Manager;
 using Assignment2C2P.Business.Manager.Interface;
+using Assignment2C2P.Business.Reader.Interface;
 using Assignment2C2P.DataAccess.Repository.Interface;
 using Assignment2C2P.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,12 +15,14 @@ namespace Assignment2C2P.Business.Tests.Manager
     {
         private ITransactionManager _manager;
         private Mock<ITransactionRepository> _repository;
+        private Mock<ITransactionReaderFactory> _readerFactory;
 
         public TransactionManagerTests()
         {
             _repository = new Mock<ITransactionRepository>();
+            _readerFactory = new Mock<ITransactionReaderFactory>();
 
-            _manager = new TransactionManager(_repository.Object);
+            _manager = new TransactionManager(_repository.Object, _readerFactory.Object);
         }
 
         [TestMethod]

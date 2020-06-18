@@ -1,7 +1,9 @@
 ﻿using Assignment2C2P.Business.Manager.Interface;
 using Assignment2C2P.Shared;
+using Assignment2C2P.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -12,11 +14,13 @@ namespace Assignment2C2P.Server.Controllers
     [ApiController]
     public class TransactionsController : ControllerBase
     {
-        private ITransactionManager _manager;
+        private readonly ITransactionManager _manager;
+        private readonly ILogger<TransactionsController> _logger;
 
-        public TransactionsController(ITransactionManager manager)
+        public TransactionsController(ITransactionManager manager, ILogger<TransactionsController> logger)
         {
             _manager = manager;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -42,7 +46,7 @@ namespace Assignment2C2P.Server.Controllers
                 return BadRequest("Upload a file");
             }
 
-            string extension = Path.GetExtension(file.FileName);
+            string extension = Path.GetExtension(file.FileName).ToLower();
             string[] allowedExtension = { ".csv", ".xml" };
 
             if (!allowedExtension.Contains(extension))
@@ -50,7 +54,19 @@ namespace Assignment2C2P.Server.Controllers
                 return BadRequest("File extension");
             }
 
-            // TODO: read file and insert data here
+            try
+            {
+                _manager.ImportTransactions(file.OpenReadStream(), extension);
+            }
+            catch (TransactionValidateErrorException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (UnKnowFormatException)
+            {
+                return BadRequest("Unknown format");
+            }
 
             return Ok();
         }
