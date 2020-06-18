@@ -33,9 +33,9 @@ namespace Assignment2C2P.Business.Validator
                     errorMessage += $"> CurrencyCode should be in ISO4217 format but was {trans.PaymentDetails.CurrencyCode}" + Environment.NewLine;
                 }
 
-                if (!DateTime.TryParseExact(trans.TransactionDate, "yyyy-MM-ddThh:mm:ss", null, DateTimeStyles.None, out DateTime transactionDate))
+                if (!DateTime.TryParseExact(trans.TransactionDate, "yyyy-MM-ddTHH:mm:ss", null, DateTimeStyles.None, out DateTime transactionDate))
                 {
-                    errorMessage += $"> Transaction Date should be in format (yyyy-MM-ddThh:mm:ss) but was {trans.TransactionDate}" + Environment.NewLine;
+                    errorMessage += $"> Transaction Date should be in format (yyyy-MM-ddTHH:mm:ss) but was {trans.TransactionDate}" + Environment.NewLine;
                 }
 
                 if (!StaticValue.XmlStatusList.ContainsKey(trans.Status))
