@@ -4,6 +4,8 @@ namespace Assignment2C2P.Domain
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext() { }
+
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {

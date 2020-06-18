@@ -16,7 +16,7 @@ else
         <div class="form-group">
             <label>Currency</label>
             <select class="form-control" @bind="currency">
-                <option>no select</option>
+                @((MarkupString)"<option value=\"\">--no select--</option>")
                 @foreach (var c in currencies)
                 {
                     <option value="@c">@c</option>
@@ -32,7 +32,7 @@ else
         <div class="form-group">
             <label>Status</label>
             <select class="form-control" @bind="status">
-                <option>no select</option>
+                @((MarkupString)"<option value=\"\">--no select--</option>")
                 <option value="A">Approved (A)</option>
                 <option value="R">Rejected (R)</option>
                 <option value="D">Done (D)</option>

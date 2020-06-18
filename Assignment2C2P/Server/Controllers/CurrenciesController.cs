@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using Assignment2C2P.Business.Manager.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment2C2P.Server.Controllers
 {
@@ -7,14 +7,18 @@ namespace Assignment2C2P.Server.Controllers
     [ApiController]
     public class CurrenciesController : ControllerBase
     {
+        private ICurrencyManager _manager;
+
+        public CurrenciesController(ICurrencyManager manager)
+        {
+            _manager = manager;
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
-            // TODO: Get data here
-
-            var result = new List<string> { "USD", "THB", "JPY" };
-
-            return Ok(result);
+            var currencies = _manager.GetCurrencies();
+            return Ok(currencies);
         }
     }
 }

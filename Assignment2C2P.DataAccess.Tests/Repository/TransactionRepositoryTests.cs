@@ -39,7 +39,7 @@ namespace Assignment2C2P.DataAccess.Tests.Repository
                 new TransactionItem
                 {
                     TransactionId = "Tran3",
-                    CurrencyCode = "JPY",
+                    CurrencyCode = "USD",
                     Status = "D" ,
                     TransactionDate = new DateTime(2020, 3, 1)
                 },
@@ -130,6 +130,18 @@ namespace Assignment2C2P.DataAccess.Tests.Repository
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Tran1", result[0].TransactionId);
+        }
+
+        [TestMethod]
+        public void GetCurrencies_Should_ReturnDistinctCurrencyCodeFromTransactions()
+        {
+            var result = _repository.GetCurrencies();
+
+            Assert.AreEqual(3, result.Count);
+            var expectedResults = new[] { "USD", "THB", "CAD" };
+            Assert.IsTrue(expectedResults.Contains(result[0]));
+            Assert.IsTrue(expectedResults.Contains(result[1]));
+            Assert.IsTrue(expectedResults.Contains(result[2]));
         }
     }
 }

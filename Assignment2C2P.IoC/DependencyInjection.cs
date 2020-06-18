@@ -12,6 +12,7 @@ namespace Assignment2C2P.IoC
         {
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<ITransactionManager, TransactionManager>();
+            services.AddTransient<ICurrencyManager, CurrencyManager>();
 
             return services;
         }

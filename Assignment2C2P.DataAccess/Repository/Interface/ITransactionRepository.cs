@@ -9,5 +9,6 @@ namespace Assignment2C2P.DataAccess.Repository.Interface
         void BulkInsert(IEnumerable<TransactionItem> items);
         IEnumerable<TransactionItem> SearchTransactions(
             string currencyCode, string statusCode, DateTime? dateFrom, DateTime? dateTo);
+        List<string> GetCurrencies();
     }
 }

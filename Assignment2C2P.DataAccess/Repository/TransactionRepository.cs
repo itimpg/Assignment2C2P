@@ -26,6 +26,12 @@ namespace Assignment2C2P.DataAccess.Repository
             _context.SaveChanges();
         }
 
+        public List<string> GetCurrencies()
+        {
+            return _context.Transactions.Select(x => x.CurrencyCode)
+                .Distinct().ToList();
+        }
+
         public IEnumerable<TransactionItem> SearchTransactions(
             string currencyCode, string statusCode, DateTime? dateFrom, DateTime? dateTo)
         {
