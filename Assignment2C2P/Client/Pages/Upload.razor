@@ -49,6 +49,13 @@
         }
 
         var fileInfo = await file.ReadFileInfoAsync();
+        if(fileInfo.Size > 10485760)
+        {
+            message = "File size should not be greater than 10MB";
+            hasError = true;
+            return;
+        }
+
         Stream fileStream;
         using (var ms = await file.CreateMemoryStreamAsync((int)fileInfo.Size))
         {
