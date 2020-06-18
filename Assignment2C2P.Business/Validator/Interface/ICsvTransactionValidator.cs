@@ -2,6 +2,6 @@
 {
     public interface ICsvTransactionValidator
     {
-        
+        void Validate(string[] fields);
     }
 }
