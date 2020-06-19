@@ -16,7 +16,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_NotThrowRecordInvalidException_When_AllFieldsAreValid()
+        public void Validate_Should_ReturnTrueWithoutErrorMessage_When_AllFieldsAreValid()
         {
             var trans = new TransactionsTransaction
             {
@@ -36,7 +36,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_TransactionIdLengthIsGreatherThan50()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_TransactionIdLengthIsGreatherThan50()
         {
             var trans = new TransactionsTransaction
             {
@@ -57,7 +57,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_AmountIsNotDecimal()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_AmountIsNotDecimal()
         {
             var trans = new TransactionsTransaction
             {
@@ -78,7 +78,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_CurerncyIsNotInISO4217Format()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_CurerncyIsNotInISO4217Format()
         {
             var trans = new TransactionsTransaction
             {
@@ -99,7 +99,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_TransactionDateIsIncorrectFormat()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_TransactionDateIsIncorrectFormat()
         {
             var trans = new TransactionsTransaction
             {
@@ -120,7 +120,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_StatusIsNotInXmlStatus()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_StatusIsNotInXmlStatus()
         {
             var trans = new TransactionsTransaction
             {
@@ -140,11 +140,29 @@ namespace Assignment2C2P.Business.Tests.Validator
             Assert.IsTrue(error.Contains("Status"));
         }
 
+        [TestMethod]
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_PaymentDetailsIsNull()
+        {
+            var trans = new TransactionsTransaction
+            {
+                id = "Inv00001",
+                PaymentDetails = null,
+                TransactionDate = "2019-01-23T13:45:10",
+                Status = "Cancel"
+            };
+
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsFalse(result);
+            Assert.IsTrue(!string.IsNullOrEmpty(error));
+            Assert.IsTrue(error.Contains("Amount"));
+            Assert.IsTrue(error.Contains("CurrencyCode"));
+        }
+
         [DataTestMethod]
         [DataRow("Approved")]
         [DataRow("Rejected")]
         [DataRow("Done")]
-        public void Validate_Should_NotThrowRecordInvalidException_When_TheStatusIs(string status)
+        public void Validate_Should_ReturnTrueWithoutErrorMessage_When_TheStatusIs(string status)
         {
             var trans = new TransactionsTransaction
             {

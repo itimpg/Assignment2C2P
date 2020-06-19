@@ -15,7 +15,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_NotThrowRecordInvalidException_When_AllFieldsAreValid()
+        public void Validate_Should_ReturnTrueWithoutErrorMessage_When_AllFieldsAreValid()
         {
             var fields = new[] { "Invoice0000001", "1,000.00", "USD", "20/02/2019 12:33:16", "Approved" };
             var result = _validator.Validate(fields, out string error);
@@ -24,7 +24,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_TransactionIdLengthIsGreatherThan50()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_TransactionIdLengthIsGreatherThan50()
         {
             var fields = new[] { "012345678901234567890123456789012345678901234567890", "1,000.00", "USD", "20/02/2019 12:33:16", "Approved" };
             var result = _validator.Validate(fields, out string error);
@@ -34,7 +34,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_AmountIsNotDecimal()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_AmountIsNotDecimal()
         {
             var fields = new[] { "Invoice0000001", "1,000.00 USD", "USD", "20/02/2019 12:33:16", "Approved" };
             var result = _validator.Validate(fields, out string error);
@@ -44,7 +44,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_CurerncyIsNotInISO4217Format()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_CurerncyIsNotInISO4217Format()
         {
             var fields = new[] { "Invoice0000001", "1,000.00", "ABC", "20/02/2019 12:33:16", "Approved" };
             var result = _validator.Validate(fields, out string error);
@@ -54,7 +54,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_TransactionDateIsIncorrectFormat()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_TransactionDateIsIncorrectFormat()
         {
             var fields = new[] { "Invoice0000001", "1,000.00", "USD", "20/02/2019T12:33:16", "Approved" };
             var result = _validator.Validate(fields, out string error);
@@ -64,7 +64,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         }
 
         [TestMethod]
-        public void Validate_Should_ThrowRecordInvalidException_When_StatusIsNotInCsvStatus()
+        public void Validate_Should_ReturnFalseWithErrorMessage_When_StatusIsNotInCsvStatus()
         {
             var fields = new[] { "Invoice0000001", "1,000.00", "USD", "20/02/2019 12:33:16", "Cancel" };
             var result = _validator.Validate(fields, out string error);
@@ -77,7 +77,7 @@ namespace Assignment2C2P.Business.Tests.Validator
         [DataRow("Approved")]
         [DataRow("Failed")]
         [DataRow("Finished")]
-        public void Validate_Should_NotThrowRecordInvalidException_When_TheStatusIs(string status)
+        public void Validate_Should_ReturnTrueWithoutErrorMessage_When_TheStatusIs(string status)
         {
             var fields = new[] { "Invoice0000001", "1,000.00", "USD", "20/02/2019 12:33:16", status };
             var result = _validator.Validate(fields, out string error);
