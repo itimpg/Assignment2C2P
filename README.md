@@ -23,3 +23,6 @@ This layer handle how to connect to the database including data entity model
 ### Business Layer
 This layer handle data from presentation layer and return the response back
 Business layer can ask data layer when need to get or update the data
+
+## Database
+This project use LocalDb with code first for the database
