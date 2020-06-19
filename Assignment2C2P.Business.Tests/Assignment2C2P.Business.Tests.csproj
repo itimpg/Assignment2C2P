@@ -18,4 +18,27 @@
     <ProjectReference Include="..\Assignment2C2P.Business\Assignment2C2P.Business.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Reader\Files\Csv\" />
+    <Folder Include="Reader\Files\Xml\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Reader\Files\Csv\correct.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Reader\Files\Csv\incorrect.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Reader\Files\Xml\correct.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Reader\Files\Xml\empty.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Reader\Files\Xml\incorrect.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
