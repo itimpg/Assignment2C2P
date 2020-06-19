@@ -32,17 +32,15 @@ namespace Assignment2C2P.Business.Reader
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
                 while (!parser.EndOfData)
-                {
-                    try
+                { 
+                    var fields = parser.ReadFields();
+                    if (fields.Length != 5)
                     {
-                        var fields = parser.ReadFields();
-                        if (fields.Length != 5)
-                        {
-                            throw new UnKnowFormatException();
-                        }
+                        throw new UnKnowFormatException();
+                    }
 
-                        _validator.Validate(fields);
-
+                    if (_validator.Validate(fields, out string error))
+                    {
                         result.Add(new TransactionItem
                         {
                             TransactionId = fields[0],
@@ -52,10 +50,10 @@ namespace Assignment2C2P.Business.Reader
                             Status = StaticValue.CsvStatusList[fields[4]]
                         });
                     }
-                    catch (RecordInvalidException ex)
+                    else
                     {
-                        errorList.Add(ex.Message);
-                    }
+                        errorList.Add(error);
+                    } 
                 }
             }
 

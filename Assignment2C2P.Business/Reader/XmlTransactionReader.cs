@@ -45,10 +45,8 @@ namespace Assignment2C2P.Business.Reader
 
             foreach (var t in transaction.Transaction)
             {
-                try
+                if (_validator.Validate(t, out string error))
                 {
-                    _validator.Validate(t);
-
                     result.Add(new TransactionItem
                     {
                         TransactionId = t.id,
@@ -58,9 +56,9 @@ namespace Assignment2C2P.Business.Reader
                         Status = StaticValue.XmlStatusList[t.Status]
                     });
                 }
-                catch (RecordInvalidException ex)
+                else
                 {
-                    errorList.Add(ex.Message);
+                    errorList.Add(error);
                 }
             }
 

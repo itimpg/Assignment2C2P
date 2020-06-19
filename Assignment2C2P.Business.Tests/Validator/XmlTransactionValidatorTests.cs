@@ -1,7 +1,6 @@
 ﻿using Assignment2C2P.Business.Model.Xml;
 using Assignment2C2P.Business.Validator;
 using Assignment2C2P.Business.Validator.Interface;
-using Assignment2C2P.Shared.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Assignment2C2P.Business.Tests.Validator
@@ -31,7 +30,9 @@ namespace Assignment2C2P.Business.Tests.Validator
                 Status = "Rejected"
             };
 
-            _validator.Validate(trans);
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsTrue(result);
+            Assert.AreEqual(string.Empty, error);
         }
 
         [TestMethod]
@@ -49,7 +50,10 @@ namespace Assignment2C2P.Business.Tests.Validator
                 Status = "Rejected"
             };
 
-            Assert.ThrowsException<RecordInvalidException>(() => _validator.Validate(trans));
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsFalse(result);
+            Assert.IsTrue(!string.IsNullOrEmpty(error));
+            Assert.IsTrue(error.Contains("Transaction Id"));
         }
 
         [TestMethod]
@@ -67,7 +71,10 @@ namespace Assignment2C2P.Business.Tests.Validator
                 Status = "Rejected"
             };
 
-            Assert.ThrowsException<RecordInvalidException>(() => _validator.Validate(trans));
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsFalse(result);
+            Assert.IsTrue(!string.IsNullOrEmpty(error));
+            Assert.IsTrue(error.Contains("Amount"));
         }
 
         [TestMethod]
@@ -85,7 +92,10 @@ namespace Assignment2C2P.Business.Tests.Validator
                 Status = "Rejected"
             };
 
-            Assert.ThrowsException<RecordInvalidException>(() => _validator.Validate(trans));
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsFalse(result);
+            Assert.IsTrue(!string.IsNullOrEmpty(error));
+            Assert.IsTrue(error.Contains("CurrencyCode"));
         }
 
         [TestMethod]
@@ -103,7 +113,10 @@ namespace Assignment2C2P.Business.Tests.Validator
                 Status = "Rejected"
             };
 
-            Assert.ThrowsException<RecordInvalidException>(() => _validator.Validate(trans));
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsFalse(result);
+            Assert.IsTrue(!string.IsNullOrEmpty(error));
+            Assert.IsTrue(error.Contains("Transaction Date"));
         }
 
         [TestMethod]
@@ -121,7 +134,10 @@ namespace Assignment2C2P.Business.Tests.Validator
                 Status = "Cancel"
             };
 
-            Assert.ThrowsException<RecordInvalidException>(() => _validator.Validate(trans));
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsFalse(result);
+            Assert.IsTrue(!string.IsNullOrEmpty(error));
+            Assert.IsTrue(error.Contains("Status"));
         }
 
         [DataTestMethod]
@@ -142,7 +158,9 @@ namespace Assignment2C2P.Business.Tests.Validator
                 Status = status
             };
 
-            _validator.Validate(trans);
+            var result = _validator.Validate(trans, out string error);
+            Assert.IsTrue(result);
+            Assert.AreEqual(string.Empty, error);
         }
     }
 }

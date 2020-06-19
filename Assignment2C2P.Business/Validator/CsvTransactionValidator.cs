@@ -11,7 +11,7 @@ namespace Assignment2C2P.Business.Validator
 {
     public class CsvTransactionValidator : ICsvTransactionValidator
     {
-        public void Validate(string[] fields)
+        public bool Validate(string[] fields, out string errorMessage)
         {
             var errorList = new List<string>();
 
@@ -43,8 +43,13 @@ namespace Assignment2C2P.Business.Validator
             if (errorList.Any())
             {
                 errorList.Insert(0, $"Cannot import transaction {fields[0]}");
-                var errorMessage = string.Join(Environment.NewLine, errorList);
-                throw new RecordInvalidException(errorMessage);
+                errorMessage = string.Join(Environment.NewLine, errorList);
+                return false;
+            }
+            else
+            {
+                errorMessage = string.Empty;
+                return true;
             }
         }
     }

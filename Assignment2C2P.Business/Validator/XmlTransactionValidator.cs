@@ -2,7 +2,6 @@
 using Assignment2C2P.Business.Model.Xml;
 using Assignment2C2P.Business.Validator.Interface;
 using Assignment2C2P.Shared;
-using Assignment2C2P.Shared.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,7 +11,7 @@ namespace Assignment2C2P.Business.Validator
 {
     public class XmlTransactionValidator : IXmlTransactionValidator
     {
-        public void Validate(TransactionsTransaction trans)
+        public bool Validate(TransactionsTransaction trans, out string errorMessage)
         {
             var errorList = new List<string>();
 
@@ -44,8 +43,13 @@ namespace Assignment2C2P.Business.Validator
             if (errorList.Any())
             {
                 errorList.Insert(0, $"Cannot import transaction {trans.id}");
-                var errorMessage = string.Join(Environment.NewLine, errorList);
-                throw new RecordInvalidException(errorMessage);
+                errorMessage = string.Join(Environment.NewLine, errorList);
+                return false;
+            }
+            else
+            {
+                errorMessage = string.Empty;
+                return true;
             }
         }
     }
