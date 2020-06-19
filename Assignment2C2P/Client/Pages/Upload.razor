@@ -22,9 +22,9 @@
 @if (!string.IsNullOrEmpty(message))
 {
     <div class="row mt-2">
-        <div class="col-4">
+        <div class="col-12">
             <div class="alert @(hasError?"alert-danger":"alert-success")" role="alert">
-                @message
+                @((MarkupString)message)
             </div>
         </div>
     </div>
@@ -73,7 +73,8 @@
         }
         else
         {
-            message = "upload error : " + await response.Content.ReadAsStringAsync();
+            message = "upload error : <br/>"
+                + (await response.Content.ReadAsStringAsync()).Replace(System.Environment.NewLine, "<br/>");
             hasError = true;
         }
     }
